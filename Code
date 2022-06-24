@@ -1,0 +1,46 @@
+## R Markdown
+
+This is an R Markdown document for course project using NYPD Shooting Incident Data (Historic) dataset via  <https://catalog.data.gov/dataset/nypd-shooting-incident-data-historic>. Data dictionary via <https://data.cityofnewyork.us/Public-Safety/NYPD-Shooting-Incident-Data-Historic-/833y-fsy8>sm
+
+## Package
+Package needed
+install tinytex if pdf knit is not installed
+tinytex::install_tinytex()
+library(tidyverse)
+library(lubridate)
+
+
+## Data Source Import
+<"https://data.cityofnewyork.us/api/views/833y-fsy8/rows.csv">
+NYPD <- read_csv("https://data.cityofnewyork.us/api/views/833y-fsy8/rows.csv")
+NYPD
+summary(NYPD)
+
+
+
+## Data Clean-Up
+NYPD <- NYPD %>% mutate(date=mdy(OCCUR_DATE),time=hms(OCCUR_TIME))
+NYPD <- NYPD[, c(1,20,21,4,5,8,9,10,11,12,13,14,17,18)]
+
+NYPD$"BORO" <- as.factor(NYPD$"BORO")
+NYPD$"PRECINCT" <- as.factor(NYPD$"PRECINCT")
+NYPD$"STATISTICAL_MURDER_FLAG" <- as.factor(NYPD$"STATISTICAL_MURDER_FLAG")
+NYPD$"VIC_AGE_GROUP" <- as.factor(NYPD$"VIC_AGE_GROUP")
+NYPD$"VIC_SEX" <- as.factor(NYPD$"VIC_SEX")
+NYPD$"VIC_RACE" <- as.factor(NYPD$"VIC_RACE")
+NYPD$"PERP_AGE_GROUP" <- as.factor(NYPD$"PERP_AGE_GROUP")
+NYPD$"PERP_SEX" <- as.factor(NYPD$"PERP_SEX")
+NYPD$"PERP_RACE" <- as.factor(NYPD$"PERP_RACE")
+
+NYPD
+
+
+
+## Analysis
+summary(NYPD)
+
+install.packages("gmodels")
+library(gmodels)
+CrossTable(NYPD$BORO, NYPD$VIC_RACE)
+CrossTable(NYPD$BORO, NYPD$VIC_AGE_GROUP)
+CrossTable(NYPD$BORO, NYPD$VIC_SEX)
